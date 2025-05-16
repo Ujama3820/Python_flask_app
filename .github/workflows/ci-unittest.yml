@@ -28,5 +28,5 @@ jobs:
       - name: 🧪 Run unit tests
         run: |
           echo "🚀 Unit tests are running..."
-          python -m unittest discover -v
+          python -m unittest test_calculator.py
           echo "✅ Unit tests completed successfully."
