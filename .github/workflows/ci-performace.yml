@@ -1,0 +1,44 @@
+name: CI – Build, Test & Performance
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  perf-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with: 
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Start Flask in background
+        run: |
+          echo "🚀 Starting Flask app..."
+          nohup python mock_api.py &
+          sleep 10
+
+      - name: Run JMeter Performance Test
+        run: |
+          echo "🧪 Performance test is starting..."
+          jmeter -n \
+            -t performance_test.jmx \
+            -l perf_results.jtl \
+            -e -o perf_html_report
+          echo "✅ Performance test completed."
+
+      - name: Upload JMeter Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: jmeter-report
+          path: perf_html_report
