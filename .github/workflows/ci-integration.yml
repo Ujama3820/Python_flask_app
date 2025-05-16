@@ -1,0 +1,38 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ master]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          echo "📦 Installing dependencies..."
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Start Flask app
+        run: |
+          echo "🚀 Starting Flask app in background..."
+          nohup python mock_api.py &                 # launch your app on port 5000
+          sleep 10                                # wait for it to be ready
+
+      - name: 🧪 Run integration tests
+        run: |
+          echo "🚀 Integration tests are running…"
+          python -m unittest "test_integration.py"
+          echo "✅ Integration tests completed successfully."
