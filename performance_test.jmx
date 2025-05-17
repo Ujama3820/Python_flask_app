@@ -44,8 +44,25 @@
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
-        <hashTree/>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Check HTTP 200 OK" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <string>200</string>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Response_Code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Max Response Time 2000ms" enabled="true">
+            <intProp name="DurationAssertion.duration">2000</intProp>
+          </DurationAssertion>
+        </hashTree>
       </hashTree>
+      <!-- Simple Data Writer listener to save results -->
+      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="Simple Data Writer" enabled="true">
+        <stringProp name="filename">perf_results.jtl</stringProp>
+      </ResultCollector>
+      <hashTree/>
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
