@@ -22,10 +22,15 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install JMeter
+      - name: Install latest JMeter
         run: |
-          sudo apt update
-          sudo apt install -y jmeter
+          wget https://downloads.apache.org//jmeter/binaries/apache-jmeter-5.5.tgz
+          tar -xzf apache-jmeter-5.5.tgz
+          sudo mv apache-jmeter-5.5 /opt/jmeter
+          sudo ln -s /opt/jmeter/bin/jmeter /usr/local/bin/jmeter
+
+      - name: Check JMeter version
+        run: jmeter --version
 
       - name: Start Flask in background
         run: |
@@ -39,11 +44,15 @@ jobs:
           jmeter -n \
             -t performance_test.jmx \
             -l perf_results.jtl \
-            -e -o report
+            -e -o perf_html_report
           echo "✅ Performance test completed."
+
+      - name: Verify report folder exists
+        run: |
+          ls -alh perf_html_report || echo "perf_html_report not found"
 
       - name: Upload JMeter Report
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-report
-          path: report
+          path: perf_html_report
