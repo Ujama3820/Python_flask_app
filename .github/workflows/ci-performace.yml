@@ -24,11 +24,10 @@ jobs:
 
       - name: Install latest JMeter
         run: |
-           wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.5.tgz
-           tar -xzf apache-jmeter-5.5.tgz
-           sudo mv apache-jmeter-5.5 /opt/jmeter
-           sudo ln -s /opt/jmeter/bin/jmeter /usr/local/bin/jmeter
-
+          wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.5.tgz
+          tar -xzf apache-jmeter-5.5.tgz
+          sudo mv apache-jmeter-5.5 /opt/jmeter
+          sudo ln -s /opt/jmeter/bin/jmeter /usr/local/bin/jmeter
 
       - name: Check JMeter version
         run: jmeter --version
@@ -38,6 +37,7 @@ jobs:
           echo "🚀 Starting Flask app..."
           nohup python mock_api.py &
           sleep 10
+          ps aux | grep python || echo "Flask app not running"
 
       - name: Run JMeter Performance Test
         run: |
@@ -45,15 +45,31 @@ jobs:
           jmeter -n \
             -t performance_test.jmx \
             -l perf_results.jtl \
-            -e -o perf_html_report
+            -e -o perf_html_report \
+            -j jmeter.log
           echo "✅ Performance test completed."
+
+      - name: Inspect JMeter Results
+        run: |
+          echo "🔍 Contents of perf_results.jtl"
+          cat perf_results.jtl || echo "No JTL file"
+          echo "🔍 Contents of jmeter.log"
+          cat jmeter.log || echo "No JMeter log"
 
       - name: Verify report folder exists
         run: |
-          ls -alh perf_html_report || echo "perf_html_report not found"
+          ls -R perf_html_report || echo "perf_html_report not found"
 
       - name: Upload JMeter Report
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-report
           path: perf_html_report
+
+      - name: Upload raw JMeter logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-logs
+          path: |
+            jmeter.log
+            perf_results.jtl
