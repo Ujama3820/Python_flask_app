@@ -43,7 +43,7 @@ jobs:
           echo "✅ Performance test completed."
 
       - name: Upload JMeter Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.3
         with:
           name: jmeter-report
           path: report
