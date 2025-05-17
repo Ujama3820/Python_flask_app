@@ -47,7 +47,7 @@
         <hashTree>
           <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Check HTTP 200 OK" enabled="true">
             <collectionProp name="Asserion.test_strings">
-              <string>200</string>
+              <stringProp name="">200</stringProp>
             </collectionProp>
             <stringProp name="Assertion.test_field">Response_Code</stringProp>
             <boolProp name="Assertion.assume_success">false</boolProp>
