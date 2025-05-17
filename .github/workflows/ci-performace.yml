@@ -43,7 +43,7 @@ jobs:
         run: |
           echo "🧪 Performance test is starting..."
           jmeter -n \
-            -t performance_test.jmx \
+            -t performance_test1.jmx \
             -l perf_results.jtl \
             -e -o perf_html_report
           echo "✅ Performance test completed."
