@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.5">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Calculator Full API Test Plan" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Calculator API Performance Test" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
@@ -12,7 +12,7 @@
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Users" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="User Load" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -36,7 +36,6 @@
           </collectionProp>
         </HeaderManager>
         <hashTree/>
-        <!-- POST /api/add -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /api/add" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
@@ -64,7 +63,6 @@
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <!-- POST /api/subtract -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /api/subtract" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
@@ -92,7 +90,6 @@
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <!-- POST /api/multiply -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /api/multiply" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
@@ -120,14 +117,14 @@
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <!-- POST /api/divide -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /api/divide" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.name"></stringProp>
-                <stringProp name="Argument.value">{&quot;a&quot;:10,&quot;b&quot;:5}</stringProp>
+                <stringProp name="Argument.value">{
+                  &quot;a&quot;:10,&quot;b&quot;:5}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.contentType">application/json</stringProp>
@@ -147,6 +144,185 @@
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
+        <hashTree/>
+        <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="JMeter Backend Listener" enabled="false">
+          <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="jmeter.send.interval" elementType="HTTPArgument">
+                <stringProp name="Argument.name">jmeter.send.interval</stringProp>
+                <stringProp name="Argument.value">1000</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="jmeter.backend_listener.server_url" elementType="HTTPArgument">
+                <stringProp name="Argument.name">jmeter.backend_listener.server_url</stringProp>
+                <stringProp name="Argument.value">http://localhost:8086/write?db=mydb&amp;rp=one_hour</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="jmeter.backend_listener.tcp.hostname" elementType="HTTPArgument">
+                <stringProp name="Argument.name">jmeter.backend_listener.tcp.hostname</stringProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="jmeter.backend_listener.tcp.port" elementType="HTTPArgument">
+                <stringProp name="Argument.name">jmeter.backend_listener.tcp.port</stringProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="jmeter.backend_listener.tcp.timeout" elementType="HTTPArgument">
+                <stringProp name="Argument.name">jmeter.backend_listener.tcp.timeout</stringProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="testname" elementType="HTTPArgument">
+                <stringProp name="Argument.name">testname</stringProp>
+                <stringProp name="Argument.value">Calculator Full API Test</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="classname">org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackend</stringProp>
+        </BackendListener>
+        <hashTree/>
+        <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="Simple Data Writer" enabled="false">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="org.apache.jmeter.save.SaveService">
+              <boolProp name="SaveService.autoscroll">false</boolProp>
+              <boolProp name="SaveService.check_tilde">true</boolProp>
+              <boolProp name="SaveService.delivery_octet">false</boolProp>
+              <boolProp name="SaveService.field_names">true</boolProp>
+              <boolProp name="SaveService.print_field_names">true</boolProp>
+              <stringProp name="SaveService.filename">perf_results.csv</stringProp>
+              <boolProp name="SaveService.save_as_xml">false</boolProp>
+              <boolProp name="SaveService.save_field_names">true</boolProp>
+              <boolProp name="SaveService.save_interval">500</boolProp>
+              <boolProp name="SaveService.unbuffered">false</boolProp>
+              <boolProp name="SaveService.xml_attribute_config">false</boolProp>
+              <boolProp name="SaveService.xml_attribute_configs">true</boolProp>
+              <boolProp name="SaveService.xml_dtd">false</boolProp>
+              <boolProp name="SaveService.xml_pi">false</boolProp>
+              <boolProp name="SaveService.samplerData">false</boolProp>
+              <boolProp name="SaveService.statement">false</boolProp>
+              <boolProp name="SaveService.subtree">false</boolProp>
+              <boolProp name="SaveService.thread_counts">false</boolProp>
+              <boolProp name="SaveService.timers">true</boolProp>
+              <boolProp name="SaveService.timestamp">true</boolProp>
+              <boolProp name="SaveService.url">true</boolProp>
+              <boolProp name="SaveService.user_defined">false</boolProp>
+              <stringProp name="SaveService.encoding"></stringProp>
+              <stringProp name="SaveService.filepath"></stringProp>
+              <stringProp name="SaveService.saveAsXmlFormat">false</stringProp>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="org.apache.jmeter.save.SaveService">
+              <boolProp name="SaveService.autoscroll">true</boolProp>
+              <boolProp name="SaveService.check_tilde">true</boolProp>
+              <boolProp name="SaveService.delivery_octet">false</boolProp>
+              <boolProp name="SaveService.field_names">true</boolProp>
+              <boolProp name="SaveService.print_field_names">true</boolProp>
+              <stringProp name="SaveService.filename">summary_results.csv</stringProp>
+              <boolProp name="SaveService.save_as_xml">false</boolProp>
+              <boolProp name="SaveService.save_field_names">true</boolProp>
+              <boolProp name="SaveService.save_interval">500</boolProp>
+              <boolProp name="SaveService.unbuffered">false</boolProp>
+              <boolProp name="SaveService.xml_attribute_config">false</boolProp>
+              <boolProp name="SaveService.xml_attribute_configs">true</boolProp>
+              <boolProp name="SaveService.xml_dtd">false</boolProp>
+              <boolProp name="SaveService.xml_pi">false</boolProp>
+              <boolProp name="SaveService.samplerData">false</boolProp>
+              <boolProp name="SaveService.statement">false</boolProp>
+              <boolProp name="SaveService.subtree">false</boolProp>
+              <boolProp name="SaveService.thread_counts">false</boolProp>
+              <boolProp name="SaveService.timers">true</boolProp>
+              <boolProp name="SaveService.timestamp">true</boolProp>
+              <boolProp name="SaveService.url">true</boolProp>
+              <boolProp name="SaveService.user_defined">false</boolProp>
+              <stringProp name="SaveService.encoding"></stringProp>
+              <stringProp name="SaveService.filepath"></stringProp>
+              <stringProp name="SaveService.saveAsXmlFormat">false</stringProp>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Statistics Table" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="org.apache.jmeter.save.SaveService">
+              <boolProp name="SaveService.autoscroll">true</boolProp>
+              <boolProp name="SaveService.check_tilde">true</boolProp>
+              <boolProp name="SaveService.delivery_octet">false</boolProp>
+              <boolProp name="SaveService.field_names">true</boolProp>
+              <boolProp name="SaveService.print_field_names">true</boolProp>
+              <stringProp name="SaveService.filename">statistics_results.csv</stringProp>
+              <boolProp name="SaveService.save_as_xml">false</boolProp>
+              <boolProp name="SaveService.save_field_names">true</boolProp>
+              <boolProp name="SaveService.save_interval">500</boolProp>
+              <boolProp name="SaveService.unbuffered">false</boolProp>
+              <boolProp name="SaveService.xml_attribute_config">false</boolProp>
+              <boolProp name="SaveService.xml_attribute_configs">true</boolProp>
+              <boolProp name="SaveService.xml_dtd">false</boolProp>
+              <boolProp name="SaveService.xml_pi">false</boolProp>
+              <boolProp name="SaveService.samplerData">false</boolProp>
+              <boolProp name="SaveService.statement">false</boolProp>
+              <boolProp name="SaveService.subtree">false</boolProp>
+              <boolProp name="SaveService.thread_counts">false</boolProp>
+              <boolProp name="SaveService.timers">true</boolProp>
+              <boolProp name="SaveService.timestamp">true</boolProp>
+              <boolProp name="SaveService.url">true</boolProp>
+              <boolProp name="SaveService.user_defined">false</boolProp>
+              <stringProp name="SaveService.encoding"></stringProp>
+              <stringProp name="SaveService.filepath"></stringProp>
+              <stringProp name="SaveService.saveAsXmlFormat">false</boolProp>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="jmeter.listener.HTMLReportGui" testclass="ResultCollector" testname="HTML Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="org.apache.jmeter.save.SaveService">
+              <boolProp name="SaveService.autoscroll">false</boolProp>
+              <boolProp name="SaveService.check_tilde">true</boolProp>
+              <boolProp name="SaveService.delivery_octet">false</boolProp>
+              <boolProp name="SaveService.field_names">true</boolProp>
+              <boolProp name="SaveService.print_field_names">true</boolProp>
+              <stringProp name="SaveService.filename">perf_results.jtl</stringProp>
+              <boolProp name="SaveService.save_as_xml">false</boolProp>
+              <boolProp name="SaveService.save_field_names">true</boolProp>
+              <boolProp name="SaveService.save_interval">500</boolProp>
+              <boolProp name="SaveService.unbuffered">false</boolProp>
+              <boolProp name="SaveService.xml_attribute_config">false</boolProp>
+              <boolProp name="SaveService.xml_attribute_configs">true</boolProp>
+              <boolProp name="SaveService.xml_dtd">false</boolProp>
+              <boolProp name="SaveService.xml_pi">false</boolProp>
+              <boolProp name="SaveService.samplerData">false</boolProp>
+              <boolProp name="SaveService.statement">false</boolProp>
+              <boolProp name="SaveService.subtree">false</boolProp>
+              <boolProp name="SaveService.thread_counts">false</boolProp>
+              <boolProp name="SaveService.timers">true</boolProp>
+              <boolProp name="SaveService.timestamp">true</boolProp>
+              <boolProp name="SaveService.url">true</boolProp>
+              <boolProp name="SaveService.user_defined">false</boolProp>
+              <stringProp name="SaveService.encoding"></stringProp>
+              <stringProp name="SaveService.filepath"></stringProp>
+              <stringProp name="SaveService.saveAsXmlFormat">false</stringProp>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="TestPlan.comments">Generates the HTML Report</stringProp>
+        </ResultCollector>
         <hashTree/>
       </hashTree>
     </hashTree>
