@@ -39,11 +39,11 @@ jobs:
           jmeter -n \
             -t performance_test.jmx \
             -l perf_results.jtl \
-            -e -o perf_html_report
+            -e -o report
           echo "✅ Performance test completed."
 
       - name: Upload JMeter Report
         uses: actions/upload-artifact@v3
         with:
           name: jmeter-report
-          path: perf_html_report
+          path: report
