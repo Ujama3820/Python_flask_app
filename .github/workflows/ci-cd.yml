@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: your-dockerhub-username/flask-app
+      IMAGE_NAME: ushaikh3820/flask-app
 
     steps:
     - name: 📥 Checkout Code
