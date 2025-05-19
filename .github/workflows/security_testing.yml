@@ -1,4 +1,4 @@
-name: OWASP ZAP Security Scan
+name: ZAP Security Scan
 
 on:
   push:
@@ -18,30 +18,33 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
-      - name: Start Flask App
+      - name: Start Flask app in background
         run: |
           nohup python mock_api.py &
-          sleep 10  # Give Flask some time to start
+          sleep 10  # Give app time to boot
+
+      - name: Prepare writeable workdir for Docker
+        run: |
+          mkdir -p zap_output
+          chmod -R 777 zap_output  # Or use `chown` for tighter control
 
       - name: Run OWASP ZAP Baseline Scan
         run: |
-            docker run --network host \
-            -u $(id -u):$(id -g) \
+          docker run --network host \
             -e HOME=/zap/wrk \
-            -v $(pwd):/zap/wrk/:rw \
+            -v $(pwd)/zap_output:/zap/wrk:rw \
             ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
             -t http://localhost:5000 \
             -r zap_report.html \
             || true
 
-      - name: Verify zap_report.html exists
-        run: ls -lh zap_report.html || echo "⚠️ Report not found"
+      - name: Verify ZAP report exists
+        run: ls -lh zap_output/zap_report.html || echo "⚠️ Report not found"
 
       - name: Upload ZAP HTML Report
         uses: actions/upload-artifact@v4
         with:
           name: zap-report
-          path: zap_report.html
+          path: zap_output/zap_report.html
