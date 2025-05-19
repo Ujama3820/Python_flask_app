@@ -1,0 +1,57 @@
+name: CI/CD - Build, Push, Deploy to Local K8s
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: your-dockerhub-username/flask-app
+
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v3
+
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: 📦 Install Dependencies
+      run: pip install -r requirements.txt
+
+    - name: 🧪 Run unit tests
+      run: |
+          echo "🚀 Unit tests are running..."
+          python -m unittest test_calculator.py
+          echo "✅ Unit tests completed successfully."
+
+    - name: 🐳 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: 🔐 Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: 📦 Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ${{ env.IMAGE_NAME }}:latest
+
+    - name: ⚙️ Setup kubeconfig
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBECONFIG_CONTENT }}" > $HOME/.kube/config
+        chmod 600 $HOME/.kube/config
+
+    - name: 🚀 Deploy to Kubernetes
+      run: |
+        kubectl apply -f k8s-deployment.yaml
+        kubectl rollout status deployment flask-app
