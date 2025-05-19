@@ -23,7 +23,7 @@ jobs:
 
       - name: Start Flask App
         run: |
-          nohup python app.py &
+          nohup python mock_api.py &
           sleep 10  # Give Flask some time to start
 
       - name: Run OWASP ZAP Baseline Scan
