@@ -34,7 +34,6 @@ jobs:
 
     - name: 📄 Deploy to Kubernetes
       run: |
-        eval $(minikube docker-env)
         kubectl apply -f k8s-deployment.yaml
         kubectl rollout status deployment/flask-app
 
