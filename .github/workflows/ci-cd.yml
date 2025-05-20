@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-test-deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     env:
       IMAGE_NAME: ushaikh3820/flask-app
