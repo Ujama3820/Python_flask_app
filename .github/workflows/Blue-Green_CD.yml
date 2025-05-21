@@ -16,7 +16,9 @@ jobs:
       run: |
         curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
         sudo install minikube-linux-amd64 /usr/local/bin/minikube
-        curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        K8S_VERSION=$(curl -s https://dl.k8s.io/release/stable.txt || echo "v1.29.0")
+        echo "Using Kubernetes version $K8S_VERSION"
+        curl -LO "https://dl.k8s.io/release/${K8S_VERSION}/bin/linux/amd64/kubectl"
         chmod +x kubectl && sudo mv kubectl /usr/local/bin/
 
     - name: 🚀 Start Minikube
