@@ -39,6 +39,7 @@ jobs:
     - name: 🔍 Health Check on GREEN
       run: |
         GREEN_URL=$(minikube service flask-app-green --url | head -n1)
+        sleep 5
         curl -f $GREEN_URL/health || exit 1
 
     - name: 🔁 Delete OLD BLUE Deployment

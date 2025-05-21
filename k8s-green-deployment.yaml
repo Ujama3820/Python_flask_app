@@ -24,7 +24,7 @@ kind: Service
 metadata:
   name: flask-app-green
 spec:
-  type: NodePort
+  type: clusterIP
   selector:
     app: flask-app-green
   ports:
