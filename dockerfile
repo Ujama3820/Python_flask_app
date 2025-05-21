@@ -9,5 +9,6 @@ COPY . .
 
 EXPOSE 5000
 
-# Use Gunicorn to run your Flask app
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "mock_api:app"]
+ENV FLASK_APP=mock_api.py
+
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
