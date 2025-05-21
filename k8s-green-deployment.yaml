@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: flask-container
-        image: ushaikh3820/flask-app-green:latest
+        image: flask-app-green:latest
         ports:
         - containerPort: 5000
 
