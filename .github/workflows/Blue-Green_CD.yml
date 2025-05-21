@@ -34,7 +34,7 @@ jobs:
 
     - name: 📄 Deploy GREEN App
       run: |
-        kubectl apply -f k8s/green-deployment.yaml
+        kubectl apply -f k8s-green-deployment.yaml
         kubectl rollout status deployment/flask-app-green
 
     - name: 🔍 Health Check on GREEN
