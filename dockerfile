@@ -9,6 +9,5 @@ COPY . .
 
 EXPOSE 5000
 
-ENV FLASK_APP=mock_api.py
+CMD ["python", "mock_api.py"]
 
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
