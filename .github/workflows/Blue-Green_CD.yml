@@ -1,0 +1,60 @@
+name: CI/CD with Blue-Green on Minikube
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  blue-green-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v3
+
+    - name: 🐳 Install Minikube and kubectl
+      run: |
+        curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+        sudo install minikube-linux-amd64 /usr/local/bin/minikube
+        curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+
+    - name: 🚀 Start Minikube
+      run: |
+        minikube start --driver=docker
+        minikube status
+
+    - name: 🐳 Use Minikube Docker Daemon
+      run: |
+        eval $(minikube docker-env)
+        docker info
+
+    - name: 🛠️ Build Docker Image in Minikube
+      run: |
+        eval $(minikube docker-env)
+        docker build -t flask-app-green:latest .
+
+    - name: 📄 Deploy GREEN App
+      run: |
+        kubectl apply -f k8s/green-deployment.yaml
+        kubectl rollout status deployment/flask-app-green
+
+    - name: 🔍 Health Check on GREEN
+      run: |
+        GREEN_URL=$(minikube service flask-app-green --url | head -n1)
+        curl -f $GREEN_URL/health || exit 1
+
+    - name: 🔁 Delete OLD BLUE Deployment
+      run: |
+        kubectl delete deployment flask-app-blue --ignore-not-found
+        kubectl delete service flask-app-blue --ignore-not-found
+
+    - name: ✅ Promote GREEN to BLUE
+      run: |
+        sed 's/flask-app-green/flask-app-blue/g' k8s/green-deployment.yaml | kubectl apply -f -
+        kubectl rollout status deployment/flask-app-blue
+
+    - name: ✅ Final Check
+      run: |
+        kubectl get deployments
+        kubectl get services
