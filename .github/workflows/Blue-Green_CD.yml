@@ -31,7 +31,6 @@ jobs:
       run: |
         eval $(minikube docker-env)
         docker build -t flask-app-green:latest .
-        kubectl get deployment
 
     - name: 📄 Deploy GREEN App
       run: |
@@ -50,7 +49,7 @@ jobs:
 
     - name: ✅ Promote GREEN to BLUE
       run: |
-        sed 's/flask-app-green/flask-app-blue/g' k8s/green-deployment.yaml | kubectl apply -f -
+        sed 's/flask-app-green/flask-app-blue/g' k8s-green-deployment.yaml | kubectl apply -f -
         kubectl rollout status deployment/flask-app-blue
 
     - name: ✅ Final Check
