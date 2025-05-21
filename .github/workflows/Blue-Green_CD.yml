@@ -31,6 +31,7 @@ jobs:
       run: |
         eval $(minikube docker-env)
         docker build -t flask-app-green:latest .
+        kubectl get deployment
 
     - name: 📄 Deploy GREEN App
       run: |
